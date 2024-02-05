@@ -1,27 +1,28 @@
 #User function Template for python3
 
-from collections import defaultdict 
-class Solution:
-        
+class Solution:   
     def verticalOrder(self, root): 
-        out = defaultdict(list)
-
-        def _solve(node, row=0, col=0):
+        out_dict = {} 
+        def helper(node, h_dist=0, v_dist=0):
             if node is None:
                 return
-            out[col].append((row, node.data))
-            _solve(node.left, row + 1, col - 1)
-            _solve(node.right, row + 1, col + 1)
-
-        _solve(root)
+            
+            if h_dist in out_dict:
+                out_dict[h_dist].append((v_dist, node.data))
+            else:
+                out_dict[h_dist] = [(v_dist, node.data)]
+                
+            helper(node.left, h_dist-1, v_dist+1)
+            helper(node.right, h_dist+1, v_dist+1)
         
-        # Flatten the list of lists while maintaining vertical order and level order within each vertical
-        flat_list = []
-        for k, v in sorted(out.items()):
-            flat_list.extend([e for d, e in sorted(v, key=lambda x: x[0])])
+        helper(root)
         
-        return flat_list
-        return result
+        result_list = []
+        for k,val in sorted(out_dict.items()):
+            val_sorted = sorted(val, key= lambda x :x[0])
+            for x, y in val_sorted:
+                result_list.append(y) 
+        return result_list
         
         
         
